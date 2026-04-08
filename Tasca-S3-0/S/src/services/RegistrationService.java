@@ -8,8 +8,16 @@ import model.User;
  */
 public class RegistrationService {
 
-        private final EmailService emailService = new EmailService();
-        private final UserValidator userValidator = new UserValidator();
+    private final EmailService emailService;
+    private final UserValidator userValidator;
+
+    /**
+     * Constructor injection — dependencies provided externally for flexibility and testability.
+     */
+    public RegistrationService(EmailService emailService, UserValidator userValidator) {
+        this.emailService = emailService;
+        this.userValidator = userValidator;
+    }
 
     public void register(User user) {
         userValidator.validate(user);
@@ -20,8 +28,6 @@ public class RegistrationService {
             return;
         }
         emailService.sendConfirmationEmail(user.getEmail());
-
-
-
     }
 }
+
