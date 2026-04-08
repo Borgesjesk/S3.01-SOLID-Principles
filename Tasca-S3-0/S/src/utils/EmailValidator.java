@@ -3,6 +3,10 @@ package utils;
 import interfaces.Validator;
 import exceptions.InvalidEmailException;
 
+/**
+ * Validates email format.
+ * SRP: responsible only for checking if an email address is valid.
+ */
 public class EmailValidator implements Validator {
 
     @Override
