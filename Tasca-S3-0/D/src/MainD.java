@@ -18,7 +18,7 @@ public class MainD {
         ServicePerson servicePerson = new ServicePerson(repository);
 
         Person person = new Person();
-        person.setName("Jonas");
+        person.setName("Jess");
 
         servicePerson.savePerson(person);
     }
