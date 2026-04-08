@@ -1,144 +1,138 @@
-# 🧲 D - Principi d’Inversió de Dependències (DIP)
+# 🧲 D - Dependency Inversion Principle (DIP)
 
-## 🧠 Què és?
+## 🧠 What is it?
 
-El **Principi d’Inversió de Dependències (DIP)** estableix que:
+The **Dependency Inversion Principle (DIP)** states that:
 
-> **Les classes han de dependre d’abstraccions, no de classes concretes.**
+> **Classes should depend on abstractions, not on concrete classes.**
 
-En altres paraules, el codi hauria de **basar-se en interfícies o classes abstractes, no en implementacions específiques**. Això permet que les diferents parts del sistema estiguin **desacoblades**, cosa que **facilita el canvi, la substitució i la reutilització** de components.
+In other words, code should **rely on interfaces or abstract classes, not on specific implementations**. This allows different parts of the system to be **decoupled**, which **facilitates change, substitution and reuse** of components.
 
-📌 Això es pot resumir en dues regles clau:
-- 1 **Els mòduls de nivell alt** (lògica del negoci) **no han de dependre dels de nivell baix** (implementacions).
-- 2 **Tots dos han de dependre d’abstraccions**.
+📌 This can be summarised in two key rules:
+- 1 **High-level modules** (business logic) **should not depend on low-level modules** (implementations).
+- 2 **Both should depend on abstractions**.
 
-## 🚨 Per què és important?
-Sense DIP, els components d’alt nivell poden quedar **fortament acoblats a implementacions concretes**, cosa que fa que el sistema sigui **difícil de modificar, provar o estendre**.
+## 🚨 Why is it important?
+Without DIP, high-level components can become **tightly coupled to concrete implementations**, making the system **difficult to modify, test or extend**.
 
-Quan s’aplica DIP correctament:
+When DIP is applied correctly:
 
-- ✅ El codi és més flexible i fàcil de testejar.
-- ✅ Es poden substituir implementacions sense afectar la lògica principal.
-- ✅ Es fomenta la injecció de dependències i la programació orientada a abstractions.
+- ✅ Code is more flexible and easier to test.
+- ✅ Implementations can be swapped without affecting the main logic.
+- ✅ It encourages dependency injection and abstraction-oriented programming.
 
-### 👩‍🏫 **Exemple:**
+### 👩‍🏫 **Example:**
 
-Suposem que tens una aplicació que gestiona notificacions i que s’envien sempre per correu electrònic:
-
+Suppose you have an application that manages notifications always sent by email:
 ```java
 public class EmailService {
-    public void enviarEmail(String missatge) {
-        System.out.println("Enviant email: " + missatge);
+    public void sendEmail(String message) {
+        System.out.println("Sending email: " + message);
     }
 }
 ```
 ```java
-public class GestorNotificacions {
-    private EmailService serveiEmail;
+public class NotificationManager {
+    private EmailService emailService;
 
-    public GestorNotificacions() {
-        this.serveiEmail = new EmailService();
+    public NotificationManager() {
+        this.emailService = new EmailService();
     }
 
-    public void notificar(String missatge) {
-        serveiEmail.enviarEmail(missatge);
+    public void notify(String message) {
+        emailService.sendEmail(message);
     }
 }
 ```
 
-🔴 Problema:
-`GestorNotificacions` depèn directament de `EmailService` (una implementació concreta). Si vols afegir altres canals com SMS, WhatsApp o Push, caldria modificar la classe.
+🔴 Problem:
+`NotificationManager` depends directly on `EmailService` (a concrete implementation). If you want to add other channels like SMS, WhatsApp or Push, you would need to modify the class.
 
-⚠️Això viola el principi **OCP** i també el **DIP**.
+⚠️ This violates both **OCP** and **DIP**.
 
-✅ Solució amb DIP:
+✅ Solution with DIP:
 
-- **1️⃣ Crear una abstracció (interfície) per al servei de notificació:**
-
+- **1️⃣ Create an abstraction (interface) for the notification service:**
 ```java
-public interface CanalNotificacio {
-    void enviar(String missatge);
+public interface NotificationChannel {
+    void send(String message);
 }
-
 ```
-- **2️⃣ Fer que EmailService implementi la interfície:**
 
+- **2️⃣ Make EmailService implement the interface:**
 ```java
-public class EmailService implements CanalNotificacio {
+public class EmailService implements NotificationChannel {
     @Override
-    public void enviar(String missatge) {
-        System.out.println("Enviant email: " + missatge);
+    public void send(String message) {
+        System.out.println("Sending email: " + message);
     }
 }
 ```
-- **3️⃣ Modificar GestorNotificacions per dependre de l’abstracció:**
 
+- **3️⃣ Modify NotificationManager to depend on the abstraction:**
 ```java
-public class GestorNotificacions {
-    private CanalNotificacio canal;
+public class NotificationManager {
+    private NotificationChannel channel;
 
-    public GestorNotificacions(CanalNotificacio canal) {
-        this.canal = canal;
+    public NotificationManager(NotificationChannel channel) {
+        this.channel = channel;
     }
 
-    public void notificar(String missatge) {
-        canal.enviar(missatge);
+    public void notify(String message) {
+        channel.send(message);
     }
 }
-
 ```
-- **4️⃣ Ara pots injectar diferents canals sense modificar GestorNotificacions:**
 
+- **4️⃣ Now you can inject different channels without modifying NotificationManager:**
 ```java
 public class Main {
     public static void main(String[] args) {
-        CanalNotificacio canal = new EmailService(); // o new SmsService(), new PushService()...
-        GestorNotificacions gestor = new GestorNotificacions(canal);
-        gestor.notificar("Hola món!");
+        NotificationChannel channel = new EmailService(); // or new SmsService(), new PushService()...
+        NotificationManager manager = new NotificationManager(channel);
+        manager.notify("Hello world!");
     }
 }
 ```
----
-
-## 🎯 Objectiu de l’exercici
-
-A l’arxiu Java inclòs en aquest directori, trobaràs una classe que depèn **directament d’una altra classe concreta**.
-
-🔧 El teu repte és:
-
-1. Identificar aquesta dependència directa.
-2. Crear una **interfície o abstracció** adequada.
-3. Refactoritzar les classes perquè **depenquin de l’abstracció**, i no de la implementació concreta.
-4. Aplicar **injecció de dependències** (via constructor, setter o mètode).
----
-
-## 📌 Consells per aplicar DIP
-
-✅ Les classes de nivell alt han de ser **independents dels detalls tècnics**.
-
-✅ Utilitza **interfícies o classes abstractes** per desacoblar.
-
-✅ Aplica patrons com **Injecció de Dependències (DI) o Fàbrica (Factory)**.
-
-✅ Escriure proves unitàries és molt més fàcil quan s’aplica **DIP**.
 
 ---
 
+## 🎯 Exercise Goal
 
-## 💬 Reflexió
+In the Java file included in this directory, you will find a class that depends **directly on another concrete class**.
 
-Quan segueixes **DIP**:
-- El teu codi esdevé **modular i fàcil de mantenir**.
-- Es poden afegir **noves funcionalitats sense trencar l’existent**.
-- Afavoreixes un sistema més **net, testejable i escalable**.
+🔧 Your challenge is to:
 
-🔁 **Canvia implementacions, no dissenys**.
+1. Identify this direct dependency.
+2. Create an appropriate **interface or abstraction**.
+3. Refactor the classes so they **depend on the abstraction**, not the concrete implementation.
+4. Apply **dependency injection** (via constructor, setter or method).
 
 ---
 
-🚀Endavant! Refactoritza amb el principi DIP en ment i millora l’estructura del teu codi.
+## 📌 Tips for applying DIP
 
-❓ **Depens de classes concretes? Com podries invertir aquesta dependència?**
- 
+✅ High-level classes should be **independent of technical details**.
 
+✅ Use **interfaces or abstract classes** to decouple.
 
+✅ Apply patterns like **Dependency Injection (DI) or Factory**.
+
+✅ Writing unit tests is much easier when **DIP** is applied.
+
+---
+
+## 💬 Reflection
+
+When you follow **DIP**:
+- Your code becomes **modular and easy to maintain**.
+- **New features can be added without breaking existing ones**.
+- You favour a **cleaner, testable and scalable** system.
+
+🔁 **Change implementations, not designs**.
+
+---
+
+🚀 Go ahead! Refactor with the DIP principle in mind and improve your code structure.
+
+❓ **Are you depending on concrete classes? How could you invert that dependency?**
