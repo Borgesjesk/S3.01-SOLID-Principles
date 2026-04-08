@@ -11,6 +11,7 @@ public class EmailService {
         System.out.println("Subject: " + subject);
         System.out.println("Body: " + body);
     }
+
     public void sendConfirmationEmail(String email) {
         System.out.println("📧 Sending confirmation email to: " + email);
     }
