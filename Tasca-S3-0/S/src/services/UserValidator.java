@@ -11,11 +11,19 @@ import model.User;
 
 public class UserValidator {
 
-        private final EmailValidator emailValidator = new EmailValidator();
-        private final PasswordValidator passwordValidator = new PasswordValidator();
+    private final EmailValidator emailValidator;
+    private final PasswordValidator passwordValidator;
 
-        public void validate(User user) {
-            emailValidator.validate(user.getEmail());
-            passwordValidator.validate(user.getPassword());
+    /**
+     * Constructor injection — dependencies provided externally for flexibility and testability.
+     */
+    public UserValidator(EmailValidator emailValidator, PasswordValidator passwordValidator) {
+        this.emailValidator = emailValidator;
+        this.passwordValidator = passwordValidator;
+    }
+
+    public void validate(User user) {
+        emailValidator.validate(user.getEmail());
+        passwordValidator.validate(user.getPassword());
     }
 }
