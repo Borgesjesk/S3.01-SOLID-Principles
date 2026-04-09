@@ -28,17 +28,17 @@ class and introduce a dedicated interface:
 
 - **`Character`** — abstract base class with only `attack()` — shared by all
 - **`Damageable`** — interface with `takeDamage(int points)` — only for characters that can take damage
-- **`Warrior`** — extends `Character` + implements `Damageable` — attacks and takes damage
-- **`Ghost`** — extends `Character` only — attacks but takes no physical damage
+- **`Warrior`** — extends `Character` + implements `Damageable`
+- **`Ghost`** — extends `Character` only — no broken promises
 
-Now both `Warrior` and `Ghost` are safe substitutes for `Character` —
-no broken promises, no runtime exceptions.
-
-## Result
-```
+## Why this approach?
+Removing `takeDamage()` from the base class means every `Character` subclass
+is now a safe substitute — no runtime exceptions, no broken contracts.
+New character types can be added by simply choosing which interfaces to implement.
+```java
 Character c = new Ghost();
-c.attack(); // ✅ works perfectly
+c.attack(); // ✅ safe
 
 Damageable d = new Warrior();
-d.takeDamage(10); // ✅ works perfectly
+d.takeDamage(10); // ✅ safe
 ```

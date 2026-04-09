@@ -16,29 +16,13 @@ email logic, or registration flow would require touching the same class — maki
 fragile and hard to maintain.
 
 ## What solution was applied and why?
+The solution was to split responsibilities into dedicated classes, each with a single purpose:
 
-### 1. `User` — Pure Domain Model
-`User` is now responsible only for representing user data (name, email, password).
-All registration, validation and email logic was extracted into dedicated classes.
-
-### 2. `EmailValidator` and `PasswordValidator` — Validation Utils
-Each class handles one validation rule only.
-Both implement the `Validator` interface, ensuring a consistent contract across all validators.
-
-### 3. `UserValidator` — Validation Coordinator
-Composes `EmailValidator` and `PasswordValidator` to validate a full `User` object.
-Delegates each validation concern to the appropriate class.
-
-### 4. `EmailService` — Email Communication
-Responsible only for sending emails. Handles both generic emails and confirmation emails.
-
-### 5. `RegistrationService` — Registration Orchestrator
-Acts as the composition root for the registration flow — coordinates validation,
-confirmation and email sending without implementing any of those concerns itself.
-
-### 6. `MainS` — Entry Point
-Instantiates all components and wires them together via constructor injection,
-then demonstrates both valid and invalid registration flows.
+- **`User`** — pure domain model, responsible only for representing user data
+- **`EmailValidator`** and **`PasswordValidator`** — each handles one validation rule only, both implement the `Validator` interface for a consistent contract
+- **`UserValidator`** — composes both validators to validate a full `User` object
+- **`EmailService`** — handles all email communication, both generic and confirmation emails
+- **`RegistrationService`** — orchestrates the registration flow without implementing any of those concerns itself
 
 ## Why constructor injection?
 Instead of instantiating dependencies inside each class, they are injected via constructor.

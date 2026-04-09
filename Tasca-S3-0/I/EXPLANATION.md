@@ -34,7 +34,7 @@ Each class now implements only what it needs:
 
 No unnecessary methods, no forced implementations, no polluted design.
 
-## Benefits
-- Each class is only coupled to behaviour it actually uses
-- New devices can be added by combining existing interfaces
-- Cleaner, more modular and maintainable architecture
+## Why this approach?
+By segregating interfaces, each class depends only on what it actually uses.
+Adding a new machine (e.g. a `Dishwasher`) only requires implementing the
+relevant interfaces — no existing code needs to change.
