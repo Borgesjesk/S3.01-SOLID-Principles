@@ -1,156 +1,150 @@
-# 🔌 I - Principi de Segregació d’Interfícies (ISP)
+# 🔌 I - Interface Segregation Principle (ISP)
 
-## 🧠 Què és?
+## 🧠 What is it?
 
-El **Principi de Segregació d’Interfícies (ISP)** estableix que:
+The **Interface Segregation Principle (ISP)** states that:
 
-> **Una classe no hauria d’estar obligada a implementar mètodes que no necessita.**
+> **A class should not be forced to implement methods it does not need.**
 
-Això vol dir que les interfícies **han de ser específiques i estar ben delimitades segons la funcionalitat**. Si una interfície és massa gran o genèrica, pot forçar les classes a implementar mètodes que no tenen sentit per a elles.
+This means that interfaces **must be specific and well-defined according to functionality**. If an interface is too large or generic, it can force classes to implement methods that make no sense for them.
 
-⚠️ Aquest problema és conegut com a **interfícies grasses** (fat interfaces) o **"code smell"** `*` d’**interfícies inflades** o amb massa responsabilitats.
+⚠️ This problem is known as **fat interfaces** or **"code smell"** `*` of **bloated interfaces** with too many responsibilities.
 
-`*` **"Code smell"** fa referència a una característica del codi font que suggereix un problema més profund o un **possible error en el disseny o l'estructura del codi**.
+`*` **"Code smell"** refers to a characteristic of source code that suggests a deeper problem or a **possible error in the design or structure of the code**.
 
-## 🚨 Per què és important?
-Tenir **interfícies més petites i específiques**, és més fàcil **reutilitzar** les mateixes interfícies en diferents parts del sistema **sense causar problemes de compatibilitat.**
+## 🚨 Why is it important?
+Having **smaller and more specific interfaces** makes it easier to **reuse** those interfaces in different parts of the system **without causing compatibility issues.**
 
-### 👩‍🏫 **Exemple:**
+### 👩‍🏫 **Example:**
 
-Suposem que estàs dissenyant una aplicació que treballa amb **diversos tipus d’impressores** i ofereixes una interfície com aquesta:
-
+Suppose you are designing an application that works with **various types of printers** and you offer an interface like this:
 ```java
-public interface Impressora {
-    void imprimir(String document);
-    void escanejar(String document);
-    void enviarFax(String document);
+public interface Printer {
+    void print(String document);
+    void scan(String document);
+    void sendFax(String document);
 }
 
-public class ImpressoraBasica implements Impressora {
+public class BasicPrinter implements Printer {
     @Override
-    public void imprimir(String document) {
-        System.out.println("Imprimint: " + document);
+    public void print(String document) {
+        System.out.println("Printing: " + document);
     }
 
     @Override
-    public void escanejar(String document) {
-        throw new UnsupportedOperationException("Aquesta impressora no escaneja.");
+    public void scan(String document) {
+        throw new UnsupportedOperationException("This printer cannot scan.");
     }
 
     @Override
-    public void enviarFax(String document) {
-        throw new UnsupportedOperationException("Aquesta impressora no envia faxos.");
+    public void sendFax(String document) {
+        throw new UnsupportedOperationException("This printer cannot send faxes.");
     }
 }
-
 ```
-🔴 El Problema d’aquesta interfície és que agrupa **massa responsabilitats en una sola interfície**. No totes les impressores tenen capacitat per escanejar o enviar faxos, però igualment estan **obligades a implementar aquests mètodes**.
 
-⚠️Això viola el **Principi de Segregació d’Interfícies (ISP)**
- 
-✅ Solució amb ISP: 
-> Dividir la interfície Impressora en **interfícies més petites i específiques** (Impressora, Escaner, Fax), i fer **que cada classe implementi només les que necessita**.
+🔴 The problem with this interface is that it groups **too many responsibilities into a single interface**. Not all printers have the ability to scan or send faxes, but they are still **forced to implement these methods**.
 
-- **1️⃣ Interfícies segregades segons funcionalitat:**
+⚠️ This violates the **Interface Segregation Principle (ISP)**
 
+✅ Solution with ISP:
+> Split the Printer interface into **smaller, more specific interfaces** (Printer, Scanner, Fax), and **make each class implement only the ones it needs**.
+
+- **1️⃣ Interfaces segregated by functionality:**
 ```java
-public interface Impressora {
-    void imprimir(String document);
+public interface Printer {
+    void print(String document);
 }
 
-public interface Escaner {
-    void escanejar(String document);
+public interface Scanner {
+    void scan(String document);
 }
 
 public interface Fax {
-    void enviarFax(String document);
+    void sendFax(String document);
 }
 ```
-- **2️⃣ Impressora bàsica: només imprimeix:**
 
+- **2️⃣ Basic printer — prints only:**
 ```java
-public class ImpressoraBasica implements Impressora {
+public class BasicPrinter implements Printer {
     @Override
-    public void imprimir(String document) {
-        System.out.println("Imprimint: " + document);
+    public void print(String document) {
+        System.out.println("Printing: " + document);
     }
 }
 ```
-- **3️⃣ Impressora amb escàner: imprimeix i escaneja:**
 
+- **3️⃣ Printer with scanner — prints and scans:**
 ```java
-public class ImpressoraEscaner implements Impressora, Escaner {
+public class PrinterScanner implements Printer, Scanner {
     @Override
-    public void imprimir(String document) {
-        System.out.println("Imprimint: " + document);
+    public void print(String document) {
+        System.out.println("Printing: " + document);
     }
 
     @Override
-    public void escanejar(String document) {
-        System.out.println("Escanejant: " + document);
+    public void scan(String document) {
+        System.out.println("Scanning: " + document);
     }
 }
 ```
-- **4️⃣ Impressora multifunció: imprimeix, escaneja i envia faxos:**
 
+- **4️⃣ Multifunction printer — prints, scans and sends faxes:**
 ```java
-public class ImpressoraMultifuncio implements Impressora, Escaner, Fax {
+public class MultifunctionPrinter implements Printer, Scanner, Fax {
     @Override
-    public void imprimir(String document) {
-        System.out.println("Imprimint: " + document);
+    public void print(String document) {
+        System.out.println("Printing: " + document);
     }
 
     @Override
-    public void escanejar(String document) {
-        System.out.println("Escanejant: " + document);
+    public void scan(String document) {
+        System.out.println("Scanning: " + document);
     }
 
     @Override
-    public void enviarFax(String document) {
-        System.out.println("Enviant fax: " + document);
+    public void sendFax(String document) {
+        System.out.println("Sending fax: " + document);
     }
 }
 ```
 
 ---
 
-## 🎯 Objectiu de l’exercici
+## 🎯 Exercise Goal
 
-A l’arxiu Java adjunt trobaràs una classe o jerarquia de classes que implementa una **interfície massa gran**.
+In the attached Java file you will find a class or class hierarchy that implements a **fat interface**.
 
-🔧 El teu repte és:
+🔧 Your challenge is to:
 
-1. Detectar quins mètodes **no tenen sentit** per a algunes de les classes.
-2. Refactoritzar la interfície en **interfícies més petites i enfocades**.
-3. Fer que cada classe implementi **només les interfícies que necessita**.
-
----
-
-## 📌 Consells per aplicar ISP
-
-✅ **Si una classe ha d’implementar un mètode que només llença una excepció o queda buit... potser estàs violant ISP.**
-
-✅ **Prefereix diverses interfícies específiques a una de sola i genèrica.**
-
-✅ **Les interfícies petites i enfocades afavoreixen un disseny més flexible i mantenible.**
+1. Detect which methods **make no sense** for some of the classes.
+2. Refactor the interface into **smaller, more focused interfaces**.
+3. Make each class implement **only the interfaces it needs**.
 
 ---
 
+## 📌 Tips for applying ISP
 
-## 💬 Reflexió
+✅ **If a class has to implement a method that only throws an exception or stays empty... you may be violating ISP.**
 
-Quan se segueix **ISP**:
-- Les classes són més simples i coherents.
-- Evitem implementacions absurdes o innecessàries.
-- Es facilita l’ús de composició en lloc d’herència forçada.
+✅ **Prefer multiple specific interfaces over a single generic one.**
 
-🔁 **Més modularitat, menys acoblament.**
+✅ **Small, focused interfaces favour a more flexible and maintainable design.**
 
 ---
 
-🚀 Endavant! Revisa la interfície, aplica el principi **ISP** i refactoritza amb elegància.
+## 💬 Reflection
 
-❓ **La teva interfície fa massa coses? Quines parts podrien dividir-se?**
- 
+When **ISP** is followed:
+- Classes are simpler and more coherent.
+- We avoid absurd or unnecessary implementations.
+- It facilitates the use of composition instead of forced inheritance.
 
+🔁 **More modularity, less coupling.**
 
+---
+
+🚀 Go ahead! Review the interface, apply the **ISP** and refactor with elegance.
+
+❓ **Is your interface doing too many things? Which parts could be split?**
