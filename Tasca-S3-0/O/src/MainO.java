@@ -16,6 +16,7 @@ public class MainO {
         Instrument pianoService = new Piano();
         Instrument drumsService = new Drums();
 
+        // Injection
         InstrumentPlayer playGuitarService = new InstrumentPlayer(guitarService);
         InstrumentPlayer playPianoService = new InstrumentPlayer(pianoService);
         InstrumentPlayer playDrumsService = new InstrumentPlayer(drumsService);
