@@ -11,12 +11,12 @@ public class AirConditioner implements Switchable, TemperatureControl {
 
     @Override
     public void turnOn() {
-        System.out.println("AirConditioner is ON");
+        System.out.println("AirConditioner is ON.");
     }
 
     @Override
     public void turnOff() {
-        System.out.println("AirConditioner is OFF");
+        System.out.println("AirConditioner is OFF.");
     }
 
     @Override
