@@ -3,6 +3,10 @@ package services;
 import interfaces.Damageable;
 import model.Character;
 
+/**
+ * Warrior can attack and take physical damage.
+ * LSP: safely substitutable for Character — no broken promises.
+ */
 public class Warrior extends Character implements Damageable {
 
     public Warrior() {
